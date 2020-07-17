@@ -1,11 +1,9 @@
 package com.cg.bookstore.service;
 
 import java.util.List;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cg.bookstore.dao.*;
 import com.cg.bookstore.entities.Admin;

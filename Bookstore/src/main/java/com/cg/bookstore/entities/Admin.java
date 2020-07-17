@@ -69,7 +69,15 @@ public class Admin {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	public Admin(String email, String fullName, String password) {
+		super();
+		this.email = email;
+		this.fullName = fullName;
+		this.password = password;
+	}
+	public Admin()
+	{}
 	
 
 }
