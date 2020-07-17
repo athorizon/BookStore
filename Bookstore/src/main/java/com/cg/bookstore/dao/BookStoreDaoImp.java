@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
 import com.cg.bookstore.entities.OrderInformation;
+import com.cg.bookstore.entities.QueryResponseDTO;
 import com.cg.bookstore.exceptions.ListNotFoundException;
 import com.cg.bookstore.exceptions.UserNotFoundException;
 
@@ -82,6 +83,26 @@ public class BookStoreDaoImp implements BookStoreDao {
 //	{
 //		entityManager.remove(customer);
 //	}
-	
+	@Override
+	public QueryResponseDTO getAllCustomers(int pageNumber) {
+		
+		String queryToAllCustomers="SELECT customer FROM CustomerInformation customer WHERE customer.customerId>1 ORDER BY customerId DESC";
+		
+		TypedQuery<CustomerInformation> typedQueryForFetchingCustomers=entityManager.createQuery(queryToAllCustomers, CustomerInformation.class);
+		
+//		TypedQuery<Integer> typedQueryForSize=entityManager.createNamedQuery("SELECT count(customer) FROM CustomerInformation customer", Integer.class);
+		
+		int totalCount=typedQueryForFetchingCustomers.getResultList().size();														//typedQueryForSize.getSingleResult();
+		typedQueryForFetchingCustomers.setFirstResult((pageNumber-1)*10); 
+		typedQueryForFetchingCustomers.setMaxResults(10);
+		
+		List<CustomerInformation> resultList=typedQueryForFetchingCustomers.getResultList();
+		
+		QueryResponseDTO queryResponse=new QueryResponseDTO();
+		queryResponse.setCurrentPageNumber(pageNumber);
+		queryResponse.setTotalNoOfPages(totalCount);
+		queryResponse.setList(resultList);
+		return queryResponse;
+	}
 
 }

@@ -133,5 +133,20 @@ public class CustomerInformation {
 		this.registerDate = registerDate;
 	}
 
+	public CustomerInformation(String emailAddress, String fullName, String password, String phoneNumber, String city,
+			Integer zipCode, String country, LocalDate registerDate) {
+		super();
+		this.emailAddress = emailAddress;
+		this.fullName = fullName;
+		this.password = password;
+		this.phoneNumber = phoneNumber;
+		this.city = city;
+		this.zipCode = zipCode;
+		this.country = country;
+		this.registerDate = registerDate;
+	}
+	public CustomerInformation()
+	{}
+
 	
 }

@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cg.bookstore.dao.*;
 import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
+import com.cg.bookstore.entities.QueryResponseDTO;
+import com.cg.bookstore.exceptions.InvalidCredentialsException;
+import com.cg.bookstore.exceptions.NoCustomerFoundException;
 import com.cg.bookstore.exceptions.UserNotFoundException;
 
 
@@ -51,5 +54,37 @@ public class BookStoreServiceImp implements BookStoreService {
 //		
 //		bookStoreDao.deleteCustomer(customer);
 //	}
+	
+	@Override
+	public QueryResponseDTO getAllCustomers(String adminEmail, String adminPassword, int adminId,
+			int pageNumber) {
+		if(pageNumber>0)
+		{
+			if(adminId>0)
+			{
+					Admin admin=bookStoreDao.getAdmin(adminId);
+					if(admin==null)
+					{
+						throw new InvalidCredentialsException("Invalid credentials!");
+					}
+					else if(admin.getEmail().equals(adminEmail) && admin.getPassword().equals(adminPassword))
+					{
+						return bookStoreDao.getAllCustomers(pageNumber);
+					}
+					else
+					{
+						throw new InvalidCredentialsException("Invalid Credentials!");
+					}
+			}
+			else
+			{
+				throw new InvalidCredentialsException("Credentials are invalid");
+			}
+		}
+		else
+		{
+			throw new NoCustomerFoundException("Invalid page numnber");
+		}
+	}
 
 }

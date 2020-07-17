@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 import com.cg.bookstore.entities.Admin;
+import com.cg.bookstore.entities.QueryResponseDTO;
 import com.cg.bookstore.exceptions.UserNotFoundException;
 import com.cg.bookstore.service.*;
 
@@ -37,5 +38,13 @@ public class BookStoreController {
 		List<Admin> userList;
 		userList=bookStoreService.getUserList(adminId);
 		return new ResponseEntity<List<Admin>>(userList,HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/getallcustomers/{adminEmail}/{adminPassword}/{adminId}/{pageNumber}")
+	public ResponseEntity<Object> getAllCustomers(@PathVariable("adminEmail") String adminEmail,@PathVariable("adminPassword") String adminPassword,@PathVariable("adminId") Integer adminId,@PathVariable("pageNumber") Integer pageNumber)
+	{
+		QueryResponseDTO queryResponse=bookStoreService.getAllCustomers(adminEmail, adminPassword, adminId, pageNumber);
+		
+		return new ResponseEntity<>(queryResponse,HttpStatus.OK);
 	}
 }
