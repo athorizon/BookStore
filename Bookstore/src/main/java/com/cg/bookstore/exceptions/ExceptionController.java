@@ -44,4 +44,9 @@ public class ExceptionController extends ResponseEntityExceptionHandler{
 
 		return new ResponseEntity<>("This Request method is not supported",HttpStatus.UNSUPPORTED_MEDIA_TYPE);
 	}
+	
+	@ExceptionHandler(value = BookStoreServiceException.class)
+	public ResponseEntity<String> handleListNotFoundException(BookStoreServiceException exception) {
+		return new ResponseEntity<String>(exception.getMessage(), HttpStatus.NOT_FOUND);
+	}
 }

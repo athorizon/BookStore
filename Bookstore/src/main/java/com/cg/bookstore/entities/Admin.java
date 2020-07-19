@@ -31,11 +31,11 @@ public class Admin {
 	private String email;
 	
 	@Column(name="fullName")
-	@Size(min=8, max= 16)
+	@Size(min=6, max= 16)
 	private String fullName;
 	
 	@Column(name="password")
-	@Size(min=8, max= 16)
+	@Size(min=6, max= 16)
 	private String password;
 
 	public int getAdminId() {

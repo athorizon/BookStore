@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 import com.cg.bookstore.entities.Admin;
+import com.cg.bookstore.entities.CustomerInformation;
 import com.cg.bookstore.entities.QueryResponseDTO;
+import com.cg.bookstore.exceptions.BookStoreServiceException;
 import com.cg.bookstore.exceptions.UserNotFoundException;
 import com.cg.bookstore.service.*;
 
@@ -27,13 +32,19 @@ public class BookStoreController {
 	String check()
 	{return "Working";}
 	
-	@GetMapping("/admin/userlist/{adminId}")
+	/*********************************************************************************************************************
+	 * Method: getUserList
+	 * Description: handler mapped with get function to get request from the ui. fetches the user list
+	 * 
+	 * @param adminId:  Admin's userId
+	 * @return userList: list containing the objects of admins from the database            
+     *  Created By - Kunal Maheshwari
+	 * 
+	 ***********************************************************************************************************************/
+	
+	@GetMapping("/admin/getallusers/{adminId}")
 	public ResponseEntity<List<Admin>> getUserList(@PathVariable("adminId") int adminId)
-	{   
-		if(adminId==0)
-		{
-			throw new UserNotFoundException("An invalid value is passed and user can't be accessed");
-		}
+	{ 
 		List<Admin> userList;
 		userList=bookStoreService.getUserList(adminId);
 		return new ResponseEntity<List<Admin>>(userList,HttpStatus.OK);
@@ -46,10 +57,95 @@ public class BookStoreController {
 		
 		return new ResponseEntity<>(queryResponse,HttpStatus.OK);
 	}
+	
+	
 	@DeleteMapping("/admin/deleteCustomer/{email}")
 	public ResponseEntity<String> deleteCustomer(@PathVariable String email) {
 		bookStoreService.deleteCustomer(email);
 
 		return new ResponseEntity<String>("hogaya", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/admin/deleteUser/{adminId}")
+	public ResponseEntity<String> deleteUser(@PathVariable int adminId) throws BookStoreServiceException {
+		String response="";
+		boolean result = bookStoreService.deleteUser(adminId);
+		if (result) {
+			response = "User Account deleted Sucessfully";
+		} 
+		return new ResponseEntity<String>(response, HttpStatus.OK);
+	}
+	
+	/**********************************************************************************
+	* Method        addAdmin
+	* Description   To add another admin 
+	* returns       This method return string to tell if new admin is created or not.
+	* Created By    Ashok Sharma 
+	* Created on    17-July-2020
+	 * @throws BookStoreServiceException
+	**********************************************************************************/
+	
+	
+	@PostMapping(value="/admin/addAdmin",consumes= {"application/json"})
+	public String addAdmin(@RequestBody Admin admin) throws BookStoreServiceException
+	{
+		try 
+		{	
+			return bookStoreService.addAdmin(admin);
+		}
+		catch(NullPointerException bookStoreException)
+		{
+			throw new BookStoreServiceException("Please Enter Valid Input");
+		}
+	}
+	
+	@PutMapping("/admin/editAdmin/{adminId}")
+	public String editAdmin(@PathVariable int adminId, @RequestBody Admin admin) throws BookStoreServiceException {
+		try{
+			
+			return bookStoreService.editAdmin(adminId, admin);
+			} catch(Exception exception) {
+				throw new BookStoreServiceException(exception.getMessage());
+			}
+	}
+	
+	@PostMapping("/admin/addcustomers")
+	public String addCustomer(@RequestBody CustomerInformation customerInformation) throws BookStoreServiceException
+	{
+		try {
+			boolean status=bookStoreService.saveCustomer(customerInformation);
+			if(!status) {
+			
+			throw new BookStoreServiceException("Can't Perform Signup Process! Check your Entered data is correct");
+			}
+		
+		}
+		catch(Exception e) {
+			return "EmailId already exist";
+		}
+		return "Customer Profile Created Successfully";
+		
+	}
+	
+	@GetMapping(value="/customerlogin")
+	public ResponseEntity<Integer> customerlogin(String email, String password) throws BookStoreServiceException {
+		Integer customerid=bookStoreService.loginCustomer(email, password);
+		return new ResponseEntity<Integer>(customerid, HttpStatus.OK);
+		
+	}
+	
+	@GetMapping(value="/adminlogin")
+	public ResponseEntity<Integer> adminlogin(String email, String password) throws BookStoreServiceException {
+		
+		Integer adminid=bookStoreService.loginAdmin(email, password);
+		return new ResponseEntity<Integer>(adminid, HttpStatus.OK);
+	}
+	
+	@PutMapping("admin/updatecustomer/{customerid}")
+	public ResponseEntity<CustomerInformation> updateCustomer(@PathVariable("customerId") String customerId,@RequestBody CustomerInformation customer) throws BookStoreServiceException {
+		bookStoreService.editCustomer(customer);
+		
+		return null;
+
 	}
 }

@@ -23,6 +23,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,12 +51,10 @@
              <artifactId>junit-jupiter-engine</artifactId>
              <scope>test</scope>
          </dependency>
-         <!-- <dependency>
-    <groupId>oracle</groupId>
-    <artifactId>ojdbc6</artifactId>
-    <version>11.2.0.3</version>
-    <scope>test</scope>
-</dependency> -->
+         <dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+</dependency>
 	</dependencies>
 
 	<build>
