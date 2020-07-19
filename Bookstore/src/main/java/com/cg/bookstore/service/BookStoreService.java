@@ -9,4 +9,6 @@ public interface BookStoreService {
 
 	QueryResponseDTO getAllCustomers(String adminEmail, String adminPassword, int adminId, int pageNumber);
 
+	public void deleteCustomer(String email);
+
 }

@@ -13,7 +13,7 @@ import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
 
 @SpringBootApplication
-@Transactional
+//@Transactional
 public class BookstoreApplication implements CommandLineRunner{
 
 	@Autowired

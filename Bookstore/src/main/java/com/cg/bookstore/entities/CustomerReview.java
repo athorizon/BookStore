@@ -2,7 +2,10 @@ package com.cg.bookstore.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
 
@@ -18,6 +21,8 @@ public class CustomerReview {
 	
 	@Id
 	@Column(name="review_id")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="reviewIdGenerator")
+	@SequenceGenerator(name="reviewIdGenerator", initialValue=1000)
 	private int ratingId;
 	
 	@Column(name="book_rating")
@@ -32,14 +37,9 @@ public class CustomerReview {
 	@Column(name="review_comment",length=300)
 	@Size(min=100,max=300)
 	private String reviewComment;
-
-	public int getRatingId() {
-		return ratingId;
-	}
-
-	public void setRatingId(int ratingId) {
-		this.ratingId = ratingId;
-	}
+	
+	@Column(name="customer_id")
+	private int customerId;
 
 	public int getBookRating() {
 		return bookRating;
@@ -64,7 +64,26 @@ public class CustomerReview {
 	public void setReviewComment(String reviewComment) {
 		this.reviewComment = reviewComment;
 	}
-	
-	
+
+	public int getRatingId() {
+		return ratingId;
+	}
+
+	public int getCustomerId() {
+		return customerId;
+	}
+
+	public CustomerReview(int bookRating, String reviewHeadling, String reviewComment, int customerId) {
+		super();
+		this.bookRating = bookRating;
+		this.reviewHeadling = reviewHeadling;
+		this.reviewComment = reviewComment;
+		this.customerId = customerId;
+	}
+
+	public CustomerReview() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 }

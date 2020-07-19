@@ -34,26 +34,26 @@ public class BookStoreServiceImp implements BookStoreService {
 		userList=bookStoreDao.retreiveList(adminId);
 		return userList;
 	}
-	
-//	public void deleteCustomer(String email)
-//	{
-//		CustomerInformation customer=bookStoreDao.getCustomerByEmail(email);
-//		boolean customerReviewStatus = bookStoreDao.getCustomerReviewStatus(customer.getCustomerId());
-//		
-//		if(customerReviewStatus==true)
-//		{
-//			//throw exception
-//		}
-//		
-//		boolean orderInformationStatus = bookStoreDao.getOrderInformationStatus(customer.getCustomerId());
-//		
-//		if(orderInformationStatus==true)
-//		{
-//			//throw exception
-//		}
-//		
-//		bookStoreDao.deleteCustomer(customer);
-//	}
+	@Override
+	public void deleteCustomer(String email)
+	{
+		CustomerInformation customer=bookStoreDao.getCustomerByEmail(email);
+		boolean customerReviewStatus = bookStoreDao.getCustomerReviewStatus(customer.getCustomerId());
+		
+		if(customerReviewStatus==true)
+		{
+			throw new UserNotFoundException("hello message");
+		}
+		
+		boolean orderInformationStatus = bookStoreDao.getOrderInformationStatus(customer.getCustomerId());
+		
+		if(orderInformationStatus==true)
+		{
+			throw new UserNotFoundException("hello message");
+		}
+		
+		bookStoreDao.deleteCustomer(customer);
+	}
 	
 	@Override
 	public QueryResponseDTO getAllCustomers(String adminEmail, String adminPassword, int adminId,
