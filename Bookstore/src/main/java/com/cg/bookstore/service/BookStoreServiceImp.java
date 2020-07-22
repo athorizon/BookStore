@@ -1,5 +1,7 @@
 package com.cg.bookstore.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -224,11 +226,14 @@ public class BookStoreServiceImp implements BookStoreService {
 	
 	@Override
 	public boolean saveCustomer(CustomerInformation customer) {
+		Date dateNow = new Date();
+		SimpleDateFormat objectofSimpleDateFormat=new SimpleDateFormat("dd-MMM-yyyy','hh:mm");
 		if(customer.getEmailAddress()==null || customer.getCity()==null || customer.getCountry()==null || customer.getEmailAddress()==null || customer.getFullName()==null || 
 				customer.getPassword()==null || customer.getPhoneNumber()==null || customer.getZipCode()==0  )
 			throw new BookStoreServiceException("A data filed is found to be null");
-		bookStoreDao.saveCustomer(customer);
-		return true;
+		customer.setRegisterDate(objectofSimpleDateFormat.format(dateNow));
+		boolean check=bookStoreDao.saveCustomer(customer);
+		return check;
 	}
 	
 	@Override

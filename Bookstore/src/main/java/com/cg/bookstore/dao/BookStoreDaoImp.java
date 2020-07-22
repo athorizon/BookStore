@@ -143,7 +143,7 @@ public class BookStoreDaoImp implements BookStoreDao {
 	
 	@Override
 	public boolean saveCustomer(CustomerInformation customer) {
-		entityManager.persist(customer);
+		 entityManager.persist(customer);
 		return true;
 		
 	}

@@ -58,7 +58,7 @@ public class CustomerInformation {
 	private String country;
 	
 	@Column(name="register_date")
-	private LocalDate registerDate;
+	private String registerDate;
 	
 	public int getCustomerId() {
 		return customerId;
@@ -102,14 +102,18 @@ public class CustomerInformation {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public LocalDate getRegisterDate() {
-		return registerDate;
-	}
+	
 	public String getPassword() {
 		return password;
 	}
+	public String getRegisterDate() {
+		return registerDate;
+	}
+	public void setRegisterDate(String registerDate) {
+		this.registerDate = registerDate;
+	}
 	public CustomerInformation(String emailAddress, String fullName, String password, String phoneNumber, String city,
-			Integer zipCode, String country, LocalDate registerDate) {
+			Integer zipCode, String country, String registerDate) {
 		super();
 		this.emailAddress = emailAddress;
 		this.fullName = fullName;
