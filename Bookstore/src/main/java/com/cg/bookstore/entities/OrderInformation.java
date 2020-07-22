@@ -111,7 +111,19 @@ public class OrderInformation {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
-	
+    
+	public OrderInformation(CustomerInformation customerDetails, String shippingAddress, int quantity, float subTotal,
+			float total, String orderStatus, String paymentMethod) {
+		super();
+		this.customerDetails = customerDetails;
+		this.shippingAddress = shippingAddress;
+		this.quantity = quantity;
+		this.subTotal = subTotal;
+		this.total = total;
+		this.orderStatus = orderStatus;
+		this.paymentMethod = paymentMethod;
+	}
+	 public OrderInformation() {}
 	
 	
 

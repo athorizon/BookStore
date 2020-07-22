@@ -9,16 +9,24 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.cg.bookstore.dao.BookStoreDao;
+import com.cg.bookstore.dao.BookStoreDaoImp;
 import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
+import com.cg.bookstore.entities.CustomerReview;
+import com.cg.bookstore.entities.OrderInformation;
 
 @SpringBootApplication
-//@Transactional
+@Transactional
 public class BookstoreApplication implements CommandLineRunner{
 
 	@Autowired
 	EntityManager entityManager;
 	
+	@Autowired
+	BookStoreDao dao;
+
 	public static void main(String[] args) {
 		SpringApplication.run(BookstoreApplication.class, args);
 	}
@@ -40,6 +48,14 @@ public class BookstoreApplication implements CommandLineRunner{
 		entityManager.persist(customer1);
 		entityManager.persist(customer2);
 		entityManager.persist(customer3);*/
+		
+		
+		/*CustomerReview review1=new CustomerReview(4,"A very Nice book","Awesome book,one should must read",84);
+		entityManager.persist(review1);*/
+		
+		/*CustomerInformation customer=dao.getCustomer(102);
+		OrderInformation order=new OrderInformation(customer,"mera ghar",5,new Float(500.55),new Float(500.55),"Completed","pesa");
+		entityManager.persist(order);*/
 	}
 
 }

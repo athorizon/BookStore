@@ -31,11 +31,11 @@ public class CustomerReview {
 	private int bookRating;
 	
 	@Column(name="review_headling")
-	@Size(min=20,max=128)
+	@Size(min=10,max=128)
 	private String reviewHeadling;
 	
 	@Column(name="review_comment",length=300)
-	@Size(min=100,max=300)
+	@Size(min=10,max=300)
 	private String reviewComment;
 	
 	@Column(name="customer_id")

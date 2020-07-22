@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
@@ -19,6 +20,7 @@ import com.cg.bookstore.exceptions.NoCustomerFoundException;
 import com.cg.bookstore.exceptions.UserNotFoundException;
 
 @Repository
+@Transactional
 public class BookStoreDaoImp implements BookStoreDao {
 
 	@PersistenceContext
@@ -47,7 +49,7 @@ public class BookStoreDaoImp implements BookStoreDao {
 	
 	@Override
 	public Admin getAdminByEmail(String email) {
-		String findquery="Select admin.email FROM Admin admin WHERE admin.email= :email";
+		String findquery="Select admin FROM Admin admin WHERE admin.email= :email";
 		TypedQuery<Admin> query=entityManager.createQuery(findquery,Admin.class).setParameter("email",email);
 		return query.getSingleResult();
 	}
@@ -69,7 +71,7 @@ public class BookStoreDaoImp implements BookStoreDao {
 	}
 	
 	@Override
-	public CustomerInformation getCustomer(Integer customer_id) {
+	public CustomerInformation getCustomer(int customer_id) {
 		CustomerInformation customer=entityManager.find(CustomerInformation.class, customer_id);
 		return customer;
 	}
@@ -78,8 +80,8 @@ public class BookStoreDaoImp implements BookStoreDao {
 	
 	
 	@Override
-	public void deleteCustomer(CustomerInformation customer)
-	{
+	public void deleteCustomer(CustomerInformation customer,OrderInformation order)
+	{   entityManager.remove(order);
 		entityManager.remove(customer);
     }
 	
@@ -108,45 +110,6 @@ public class BookStoreDaoImp implements BookStoreDao {
 		}
 	
 	}
-	
-	
-	@Override
-	public QueryResponseDTO getAllCustomers(int pageNumber) {
-		
-		long totalNoOfPages=0;
-		String queryToGetCustomer = "SELECT customer FROM CustomerInformation customer";
-		TypedQuery<CustomerInformation> typedQueryForSize=entityManager.createQuery(queryToGetCustomer, CustomerInformation.class);
-       
-		long totalCount=typedQueryForSize.getResultList().size();
-		if(totalCount%10==0)
-			totalNoOfPages=totalCount/10;
-		else
-			totalNoOfPages=totalCount/10+1;
-		if(pageNumber<=totalNoOfPages)
-		{
-			String queryToAllCustomers="SELECT customer FROM CustomerInformation customer WHERE customer.customerId>1 ORDER BY customerId DESC";
-			
-			TypedQuery<CustomerInformation> typedQueryForFetchingCustomers=entityManager.createQuery(queryToAllCustomers, CustomerInformation.class);
-			
-			typedQueryForFetchingCustomers.setFirstResult((pageNumber-1)*10); 
-			typedQueryForFetchingCustomers.setMaxResults(10);
-			
-			List<CustomerInformation> resultList=typedQueryForFetchingCustomers.getResultList();
-			
-			QueryResponseDTO queryResponse=new QueryResponseDTO();
-			queryResponse.setCurrentPageNumber(pageNumber);
-			queryResponse.setTotalNoOfPages(totalNoOfPages);
-			queryResponse.setList(resultList);
-			return queryResponse;
-		}
-		else
-		{
-			throw new NoCustomerFoundException("Invalid PageNumber");
-		}
-		
-		
-	}
-	
 	
 	
 	/**********************************************************************************
@@ -200,7 +163,7 @@ public class BookStoreDaoImp implements BookStoreDao {
 
 	@Override
 	public boolean checkCustomerByEmail(String emailAddress) {
-		String checkquery="Select customer.emailAddress FROM Customer customer WHERE customer.emailAddress= :emailAddress";
+		String checkquery="Select customer.emailAddress FROM CustomerInformation customer WHERE customer.emailAddress= :emailAddress";
 		TypedQuery<String> query=entityManager.createQuery(checkquery,String.class).setParameter("emailAddress",emailAddress);
 		try {
 			
@@ -249,23 +212,32 @@ public class BookStoreDaoImp implements BookStoreDao {
 		return true;
 	}
 	
-	
 	@Override
-	public boolean getOrderInformationStatus(int customerId)
-	{   //returns false if no order is found
-		
-		try {
+	public OrderInformation getOrderByCustomer(int customerId)
+	{
 		String Qstr="Select bookStoreOrder From OrderInformation bookStoreOrder Join bookStoreOrder.customerDetails customer Where customer.customerId=:customerId";
-		TypedQuery<OrderInformation> query = entityManager.createQuery(Qstr, OrderInformation.class);
-		query.getSingleResult();
+		TypedQuery<OrderInformation> query = entityManager.createQuery(Qstr, OrderInformation.class).setParameter("customerId", customerId);
+		return query.getSingleResult();
+	}
+	@Override
+	public boolean getOrderInformationStatus(int customerId){ 
+		
+		String status;
+		try {
+			String Qstr="Select bookStoreOrder From OrderInformation bookStoreOrder Join bookStoreOrder.customerDetails customer Where customer.customerId=:customerId";
+			TypedQuery<OrderInformation> query = entityManager.createQuery(Qstr, OrderInformation.class).setParameter("customerId", customerId);
+			status=query.getSingleResult().getOrderStatus();
 		}
-		catch(Exception e)
+		catch(Exception e){
+			
+			return false;
+		}
+		if(status.equals("Completed"))
 		{
 			return false;
 		}
 		return true;
 	}
-	
 	
 	/*********************************************************************************************************************
 	 * Method: retreiveLsit
@@ -301,5 +273,54 @@ public class BookStoreDaoImp implements BookStoreDao {
 	public void updateCustomer(CustomerInformation updatedCustomer) {
 		// TODO Auto-generated method stub
 		entityManager.merge(updatedCustomer);
+	}
+	
+	
+	
+	/*************
+	 * Method Name:getAllCustomers<br/>
+	 * This is used to fetch data of customers if valid pagenumber is provided by 
+	 * admin.If pageNumber>availablepages then its going to {@link NoCustomerFoundException}
+	 * which represents customer's doesn't exist at that page
+	 * @param int pageNumber is the requested pagenumber
+	 * @return {@link QueryResponseDTO} result of this query is wrapped in this class<br/> 
+	 * which consist list<CustomerInformatio>,totalNoOfPages available,currentRequestedPageNumber
+	 **************/
+
+	@Override
+	public QueryResponseDTO getAllCustomers(int pageNumber) {
+		
+			String queryToAllCustomers="SELECT customer FROM CustomerInformation customer WHERE customer.customerId>1 ORDER BY customerId DESC";
+			
+			TypedQuery<CustomerInformation> typedQueryForFetchingCustomers=entityManager.createQuery(queryToAllCustomers, CustomerInformation.class);
+			
+			typedQueryForFetchingCustomers.setFirstResult((pageNumber-1)*10); 
+			typedQueryForFetchingCustomers.setMaxResults(10);
+			
+			List<CustomerInformation> resultList=typedQueryForFetchingCustomers.getResultList();
+			
+			QueryResponseDTO queryResponse=new QueryResponseDTO();
+			queryResponse.setCurrentPageNumber(pageNumber);
+			queryResponse.setTotalNoOfPages(getTotalNoOfPages());
+			queryResponse.setList(resultList);
+			return queryResponse;
+		
+		
+	}
+
+	@Override
+	public long getTotalNoOfPages()
+	{
+		long totalNoOfPages=0;
+		TypedQuery<Long> typedQueryForTotalNoOfRecords=entityManager.createQuery("SELECT COUNT(customer.customerId) FROM CustomerInformation customer WHERE customer.customerId>1", Long.class);
+       
+		long totalCount=typedQueryForTotalNoOfRecords.getSingleResult();
+		
+		if(totalCount%10==0)
+			totalNoOfPages=totalCount/10;
+		else
+			totalNoOfPages=totalCount/10+1;
+		
+		return totalNoOfPages;
 	}
 }

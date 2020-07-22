@@ -3,7 +3,6 @@ package com.cg.bookstore.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,6 @@ import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
 import com.cg.bookstore.entities.QueryResponseDTO;
 import com.cg.bookstore.exceptions.BookStoreServiceException;
-import com.cg.bookstore.exceptions.UserNotFoundException;
 import com.cg.bookstore.service.*;
 
 @RestController
@@ -50,7 +48,18 @@ public class BookStoreController {
 		return new ResponseEntity<List<Admin>>(userList,HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/admin/getallcustomers/{adminEmail}/{adminPassword}/{adminId}/{pageNumber}")
+	/**
+	 * getAllCustomers is for retrieving all customers.data is retrieved only by admin
+	 * so that valid admin credentials should be provided to fetch also you cannot fetch all data
+	 * at once you need to specify page number to retrieve.
+	 * @param adminEmail is emailaddress of admin
+	 * @param adminPassword is password of admin account
+	 * @param adminId is unique of admin 
+	 * @param pageNumber is the page which you want to fetch at a time you can fetch five records
+	 * @author Aravinda Reddy
+	 */
+	//todo ask peers about password encryption 
+	@GetMapping(path = "/admin/customers/{adminEmail}/{adminPassword}/{adminId}/{pageNumber}")
 	public ResponseEntity<Object> getAllCustomers(@PathVariable("adminEmail") String adminEmail,@PathVariable("adminPassword") String adminPassword,@PathVariable("adminId") Integer adminId,@PathVariable("pageNumber") Integer pageNumber)
 	{
 		QueryResponseDTO queryResponse=bookStoreService.getAllCustomers(adminEmail, adminPassword, adminId, pageNumber);
@@ -127,25 +136,23 @@ public class BookStoreController {
 		
 	}
 	
-	@GetMapping(value="/customerlogin")
-	public ResponseEntity<Integer> customerlogin(String email, String password) throws BookStoreServiceException {
+	@GetMapping(value="/customerlogin/{email}/{password}")
+	public ResponseEntity<Integer> customerlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
 		Integer customerid=bookStoreService.loginCustomer(email, password);
 		return new ResponseEntity<Integer>(customerid, HttpStatus.OK);
 		
 	}
 	
-	@GetMapping(value="/adminlogin")
-	public ResponseEntity<Integer> adminlogin(String email, String password) throws BookStoreServiceException {
+	@GetMapping(value="/adminlogin/{email}/{password}")
+	public ResponseEntity<Integer> adminlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
 		
 		Integer adminid=bookStoreService.loginAdmin(email, password);
 		return new ResponseEntity<Integer>(adminid, HttpStatus.OK);
 	}
 	
-	@PutMapping("admin/updatecustomer/{customerid}")
-	public ResponseEntity<CustomerInformation> updateCustomer(@PathVariable("customerId") String customerId,@RequestBody CustomerInformation customer) throws BookStoreServiceException {
+	@PutMapping("admin/updatecustomer")
+	public ResponseEntity<String> updateCustomer(@RequestBody CustomerInformation customer) throws BookStoreServiceException {
 		bookStoreService.editCustomer(customer);
-		
-		return null;
-
+		return new ResponseEntity<String>("updated the customer",HttpStatus.OK);
 	}
 }

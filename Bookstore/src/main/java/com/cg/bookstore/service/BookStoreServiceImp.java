@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cg.bookstore.dao.*;
 import com.cg.bookstore.entities.Admin;
 import com.cg.bookstore.entities.CustomerInformation;
+import com.cg.bookstore.entities.OrderInformation;
 import com.cg.bookstore.entities.QueryResponseDTO;
 import com.cg.bookstore.exceptions.BookStoreServiceException;
 import com.cg.bookstore.exceptions.InvalidCredentialsException;
@@ -57,18 +58,19 @@ public class BookStoreServiceImp implements BookStoreService {
 		boolean customerReviewStatus = bookStoreDao.getCustomerReviewStatus(customer.getCustomerId());
 		
 		if(customerReviewStatus==true)
-		{
-			throw new UserNotFoundException("hello message");
+		{   
+			throw new UserNotFoundException("cannot delete as review is found");
 		}
 		
 		boolean orderInformationStatus = bookStoreDao.getOrderInformationStatus(customer.getCustomerId());
 		
 		if(orderInformationStatus==true)
 		{
-			throw new UserNotFoundException("hello message");
+			throw new UserNotFoundException("cannot delete as order is found");
 		}
+		OrderInformation orderToDelete=bookStoreDao.getOrderByCustomer(customer.getCustomerId());
 		
-		bookStoreDao.deleteCustomer(customer);
+		bookStoreDao.deleteCustomer(customer,orderToDelete);
 	}
 	/********************************************************************************
 	 * Method            deleteUser 
@@ -85,6 +87,16 @@ public class BookStoreServiceImp implements BookStoreService {
 		return bookStoreDao.deleteUser(adminId);
 	}
 	
+	/**
+	 * getAllCustomers is for retrieving all customers.data is retrieved only by admin
+	 * so that valid admin credentials should be provided to fetch also you cannot fetch all data
+	 * at once you need to specify page number to retrieve.
+	 * @param adminEmail is emailaddress of admin
+	 * @param adminPassword is password of admin account
+	 * @param adminId is unique of admin 
+	 * @param pageNumber is the page which you want to fetch at a time you can fetch five records
+	 * @author Aravinda Reddy
+	 */
 	@Override
 	public QueryResponseDTO getAllCustomers(String adminEmail, String adminPassword, int adminId,
 			int pageNumber) {
@@ -99,7 +111,15 @@ public class BookStoreServiceImp implements BookStoreService {
 					}
 					else if(admin.getEmail().equals(adminEmail) && admin.getPassword().equals(adminPassword))
 					{
-						return bookStoreDao.getAllCustomers(pageNumber);
+						if(pageNumber<=bookStoreDao.getTotalNoOfPages())
+						{
+							//todo ask if we can do this as it is io operation
+							return bookStoreDao.getAllCustomers(pageNumber);
+						}
+						else
+						{
+							throw new NoCustomerFoundException("Customer's Data is Not Found in requested pageNumber");
+						}
 					}
 					else
 					{
