@@ -121,17 +121,17 @@ public class BookStoreController {
 	@PostMapping("/admin/addcustomers")
 	public String addCustomer(@RequestBody CustomerInformation customerInformation) throws BookStoreServiceException
 	{
-//		try {
+		try {
 			boolean status=bookStoreService.saveCustomer(customerInformation);
 			if(!status) {
 			
 			throw new BookStoreServiceException("Can't Perform Signup Process! Check your Entered data is correct");
-//	        	}
+	        	}
 		
 		}
-//		catch(Exception e) {
-//			return "EmailId already exist";
-//		}
+		catch(Exception e) {
+			return "EmailId already exist";
+		}
 		return "Customer Profile Created Successfully";
 		
 	}
