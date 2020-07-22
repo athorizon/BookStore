@@ -227,7 +227,7 @@ public class BookStoreServiceImp implements BookStoreService {
 	@Override
 	public boolean saveCustomer(CustomerInformation customer) {
 		Date dateNow = new Date();
-		SimpleDateFormat objectofSimpleDateFormat=new SimpleDateFormat("dd-MMM-yyyy','hh:mm");
+		SimpleDateFormat objectofSimpleDateFormat=new SimpleDateFormat ("hh:mm a',' E dd-MM-yyyy");
 		if(customer.getEmailAddress()==null || customer.getCity()==null || customer.getCountry()==null || customer.getEmailAddress()==null || customer.getFullName()==null || 
 				customer.getPassword()==null || customer.getPhoneNumber()==null || customer.getZipCode()==0  )
 			throw new BookStoreServiceException("A data filed is found to be null");
