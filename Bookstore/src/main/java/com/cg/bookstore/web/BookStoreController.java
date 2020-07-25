@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
@@ -138,17 +139,18 @@ public class BookStoreController {
 		
 	}
 	
-	@GetMapping(value="/customerlogin/{email}/{password}")
-	public ResponseEntity<CustomerInformation> customerlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
+	@GetMapping("/customerlogin")
+	public ResponseEntity<CustomerInformation> customerlogin(String email,String password) throws BookStoreServiceException {
 		CustomerInformation customer=bookStoreService.loginCustomer(email, password);
 		return new ResponseEntity<CustomerInformation>(customer, HttpStatus.OK);
 		
 	}
 	
-	@GetMapping(value="/adminlogin/{email}/{password}")
-	public ResponseEntity<Admin> adminlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
+	@GetMapping("/adminlogin")
+	public ResponseEntity<Admin> adminlogin(String email,String password) throws BookStoreServiceException {
 		
 		Admin admin=bookStoreService.loginAdmin(email, password);
+		
 		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
 	}
 	
