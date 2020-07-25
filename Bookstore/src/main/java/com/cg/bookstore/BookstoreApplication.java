@@ -34,7 +34,7 @@ public class BookstoreApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
-		Admin admin1= new Admin("Admin1@capgemini.com"," Admin1","Admin@123");
+		/*Admin admin1= new Admin("Admin1@capgemini.com"," Admin1","Admin@123");
 		Admin admin2=new Admin("Admin2@capgemini.com","Admin2","Admin@123");
 		Admin admin3=new Admin("Admin3@capgemini.com","Admin3","Admin@123");
 		entityManager.persist(admin1);
@@ -55,7 +55,7 @@ public class BookstoreApplication implements CommandLineRunner{
 		
 		CustomerInformation customer=dao.getCustomer(102);
 		OrderInformation order=new OrderInformation(customer,"mera ghar",5,new Float(500.55),new Float(500.55),"Completed","pesa");
-		entityManager.persist(order);
+		entityManager.persist(order);*/
 	}
 
 }

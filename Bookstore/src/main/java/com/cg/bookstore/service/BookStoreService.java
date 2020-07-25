@@ -15,13 +15,13 @@ public interface BookStoreService {
 
 	String editAdmin(int adminId, Admin admin) throws BookStoreServiceException;
 
-	Integer loginAdmin(String email, String password) throws BookStoreServiceException;
+	Admin loginAdmin(String email, String password) throws BookStoreServiceException;
 
 	String addAdmin(Admin admin) throws BookStoreServiceException;
 
 	boolean saveCustomer(CustomerInformation customerInfromation);
 
-	Integer loginCustomer(String email, String password) throws BookStoreServiceException;
+	CustomerInformation loginCustomer(String email, String password) throws BookStoreServiceException;
 
 	boolean deleteUser(int adminId) throws BookStoreServiceException;
 

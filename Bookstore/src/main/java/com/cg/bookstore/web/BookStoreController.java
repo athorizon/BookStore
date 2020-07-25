@@ -3,6 +3,7 @@ package com.cg.bookstore.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.cg.bookstore.entities.QueryResponseDTO;
 import com.cg.bookstore.exceptions.BookStoreServiceException;
 import com.cg.bookstore.service.*;
 
+@CrossOrigin(origins="*")
 @RestController
 public class BookStoreController {
 	
@@ -137,17 +139,17 @@ public class BookStoreController {
 	}
 	
 	@GetMapping(value="/customerlogin/{email}/{password}")
-	public ResponseEntity<Integer> customerlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
-		Integer customerid=bookStoreService.loginCustomer(email, password);
-		return new ResponseEntity<Integer>(customerid, HttpStatus.OK);
+	public ResponseEntity<CustomerInformation> customerlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
+		CustomerInformation customer=bookStoreService.loginCustomer(email, password);
+		return new ResponseEntity<CustomerInformation>(customer, HttpStatus.OK);
 		
 	}
 	
 	@GetMapping(value="/adminlogin/{email}/{password}")
-	public ResponseEntity<Integer> adminlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
+	public ResponseEntity<Admin> adminlogin(@PathVariable("email") String email,@PathVariable("password") String password) throws BookStoreServiceException {
 		
-		Integer adminid=bookStoreService.loginAdmin(email, password);
-		return new ResponseEntity<Integer>(adminid, HttpStatus.OK);
+		Admin admin=bookStoreService.loginAdmin(email, password);
+		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
 	}
 	
 	@PutMapping("admin/updatecustomer")

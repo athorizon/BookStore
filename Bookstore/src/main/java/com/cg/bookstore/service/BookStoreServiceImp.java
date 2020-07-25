@@ -237,7 +237,7 @@ public class BookStoreServiceImp implements BookStoreService {
 	}
 	
 	@Override
-	public Integer loginCustomer(String email, String password) throws BookStoreServiceException {
+	public CustomerInformation loginCustomer(String email, String password) throws BookStoreServiceException {
 		
 		if(!bookStoreDao.checkCustomerByEmail(email))
 				throw new BookStoreServiceException("Customer is not registered with this email");
@@ -248,11 +248,11 @@ public class BookStoreServiceImp implements BookStoreService {
 		if(customer.getPassword().equals(password)==false)
 				throw new BookStoreServiceException("The password does not match the Email provided");
 			
-		return customer.getCustomerId();
+		return customer;
 	}
 	
 	@Override
-	public Integer loginAdmin(String email, String password) throws BookStoreServiceException {
+	public Admin loginAdmin(String email, String password) throws BookStoreServiceException {
 		if(!bookStoreDao.checkAdminByEmail(email))
 				throw new BookStoreServiceException("Admin is not registered with this email");
 		
@@ -260,6 +260,6 @@ public class BookStoreServiceImp implements BookStoreService {
 		
 		if(admin.getPassword().equals(password)==false)
 				throw new BookStoreServiceException("Admin is not registered with this email");
-		return admin.getAdminId();
+		return admin;
 	}
 }
