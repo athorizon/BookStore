@@ -25,6 +25,6 @@ public interface BookStoreService {
 
 	boolean deleteUser(int adminId) throws BookStoreServiceException;
 
-	void editCustomer(CustomerInformation customer);
+	void editCustomer(String email,CustomerInformation customer);
 
 }

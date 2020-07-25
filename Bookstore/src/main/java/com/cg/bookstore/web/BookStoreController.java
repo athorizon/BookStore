@@ -154,9 +154,9 @@ public class BookStoreController {
 		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
 	}
 	
-	@PutMapping("admin/updatecustomer")
-	public ResponseEntity<String> updateCustomer(@RequestBody CustomerInformation customer) throws BookStoreServiceException {
-		bookStoreService.editCustomer(customer);
+	@PutMapping("admin/updatecustomer/{email}")
+	public ResponseEntity<String> updateCustomer(@PathVariable("email") String email,@RequestBody CustomerInformation customer) throws BookStoreServiceException {
+		bookStoreService.editCustomer(email,customer);
 		return new ResponseEntity<String>("updated the customer",HttpStatus.OK);
 	}
 }

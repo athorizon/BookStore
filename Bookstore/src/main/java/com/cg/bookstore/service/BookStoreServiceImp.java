@@ -142,9 +142,9 @@ public class BookStoreServiceImp implements BookStoreService {
 	
 	
 	@Override
-	public void editCustomer(CustomerInformation customer)
-	{   String emailAddress=customer.getEmailAddress();
-		CustomerInformation updatedCustomer=bookStoreDao.getCustomerByEmail(emailAddress);
+	public void editCustomer(String email,CustomerInformation customer)
+	{   
+		CustomerInformation updatedCustomer=bookStoreDao.getCustomerByEmail(email);
 		if(updatedCustomer==null)
 			throw new UserNotFoundException("Provided details can be updated as an user is not found");
 		updatedCustomer.setCity(customer.getCity());
