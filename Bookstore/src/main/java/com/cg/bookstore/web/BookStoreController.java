@@ -74,18 +74,13 @@ public class BookStoreController {
 	@DeleteMapping("/admin/deleteCustomer/{email}")
 	public ResponseEntity<String> deleteCustomer(@PathVariable String email) {
 		bookStoreService.deleteCustomer(email);
-
-		return new ResponseEntity<String>("hogaya", HttpStatus.OK);
-	}
+		return new ResponseEntity<String>("{\"data\":\"Customer deleted Sucessfully\"} ", HttpStatus.OK);
+	} 
 	
 	@DeleteMapping("/admin/deleteUser/{adminId}")
-	public ResponseEntity<String> deleteUser(@PathVariable int adminId) throws BookStoreServiceException {
-		String response="";
-		boolean result = bookStoreService.deleteUser(adminId);
-		if (result) {
-			response = "User Account deleted Sucessfully";
-		} 
-		return new ResponseEntity<String>(response, HttpStatus.OK);
+	public ResponseEntity<String> deleteUser(@PathVariable int adminId) {
+		bookStoreService.deleteUser(adminId); 
+		return new ResponseEntity<String>("{\"data\":\"User deleted Sucessfully\"} ", HttpStatus.OK);
 	}
 	
 	/**********************************************************************************
